@@ -24,8 +24,8 @@ const propertySchema = new mongoose.Schema({
     googleMapLocation: {
         locationName: String,
         coordinates: {
-            type: { type: String },
-            coordinates: []
+            type: "Point",
+            coordinates: [longtitude,latitude]
         }
     },
     contactNumber: Number,
