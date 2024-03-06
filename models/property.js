@@ -1,6 +1,5 @@
 import mongoose from 'mongoose';
 
-const Schema = mongoose.Schema;
 
 const propertySchema = new mongoose.Schema({
     title: {
