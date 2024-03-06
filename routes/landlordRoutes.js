@@ -157,6 +157,20 @@ router.delete('/delete-property/:id', async (req, res) => {
     }
 });
 
+// get landlord details
+router.get('/get-landlord-details', async (req, res) => {
+    try {
+        const { email } = req.body;
+
+        const landlord = await Landlord.findOne({ email });
+        res.json(landlord);
+
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
 
 
 export default router;
