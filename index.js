@@ -1,26 +1,37 @@
-import express from 'express'
-//import adminRoutes from  ('./routes/adminRoutes');
-//import authController from ('./controllers/authController');
+import express from 'express';
+import landlordRoutes from './routes/landlordRoutes.js';
+
+//import adminRoutes from  ('./routes/adminRoutes.js');
+//import authController from ('./controllers/authController.js');
 import mongoose from 'mongoose';
 
-import * as dotenv from 'dotenv'
+import * as dotenv from 'dotenv';
 dotenv.config()
 
 const app = express();
+const PORT = 3000;
+app.use(express.json());
+
+
+mongoose
+.connect('mongodb://localhost:27017/new_test')
+.then(() => console.log('MongoDB connected Successfully...!'))
+.catch((error) => {
+  console.log('MongoDB Error:', error.message);
+  process.exit(1);
+});
+
+
+
 
 //app.use('/admin', adminRoutes);
+app.use('/api/landlord', landlordRoutes);
 //app.post('/login', authController.login);
 
 
 
 
 
-app.listen(3000, () => {
-    mongoose
-      .connect(process.env.MONGODB_URI)
-      .then((res) => console.log('MongoDB connected Successfully...!'))
-      .catch((error) => {
-        console.log('MongoDB Error:', error.message);
-        process.exit(1);
-      });
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
   });
