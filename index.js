@@ -4,7 +4,8 @@ import mongoose from 'mongoose';
 import * as dotenv from 'dotenv';
 import checkRole from './middleware/roleMiddleware.js';
 import { signin, createNewUser } from './handlers/user.js';
-import adminRoutes from './routes/adminRoutes.js';
+import { protect } from './middleware/auth.js';
+
 
 
 
@@ -25,17 +26,23 @@ mongoose
         });
     });
 
-
-
-   
     app.use(express.json());
 
-    app.use('/registerPropertyOwner',checkRole('propertyOwner'),createNewUser)
-    app.use('/loginPropertyOwner',checkRole('propertyOwner'),signin)
+    //proerty owner register
+    app.post('/registerPropertyOwner',checkRole('propertyOwner'),createNewUser)
 
-    app.use('/adminlogin',checkRole('admin'),signin)
+    //property owner login
+    app.get('/loginPropertyOwner',checkRole('propertyOwner'),signin)
+
+    // admin login
+    app.get('/adminlogin',checkRole('admin'),signin)
+
+    //student login
+    app.get('/studentlogin',checkRole('student'),signin)
+
+    //warden login
+    app.get('/wardenlogin',checkRole('warden',signin));
   
-    //app.use('/admin', adminRoutes);
-    app.use('/api/admin',adminRoutes);
+    app.use('/api',protect,router);
    
-//app.post('/login', authController.login);
+

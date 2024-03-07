@@ -29,6 +29,29 @@ export const createNewUser = async (req,res) => {
     }
 
 }
+
+export const signin = async (req, res) => {
+    const {email, role } = req.body ;
+
+    const user = await User.findone({ email,role });
+
+   
+    if (!user) {
+        return res.status(401).json({ message: "Invalid email or password" });
+    }
+    const isValid = await comparePasswords(req.body.password, User.password)
+
+    if(!isValid) {
+        res.status(401)
+        res.json({mesage: 'nope'})
+        return
+    }
+
+    const token = createJWT(user)
+    res.json({ token })
+
+
+}
     
 
 
