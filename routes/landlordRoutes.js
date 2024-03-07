@@ -2,7 +2,40 @@ import bcrypt from 'bcryptjs';
 import express from 'express';
 import Landlord from '../models/landlord.js';
 import Property from '../models/property.js';
+import {  createJWT, hashPassword } from "../middleware/auth.js";
+import User from '../models/users.js';
+import mongoose from 'mongoose';
+//import { createNewUser } from '../handlers/user.js';
 const router = express.Router();
+
+
+
+router.post('/fuck',async (req,res) => {
+    try {
+        const { email, role } = req.body;
+        let password = req.body.password;
+
+        password = await hashPassword(password);
+
+        let newUser
+        if(role === 'propertyOwner'){
+            const propertyOwnerDetails = new mongoose.Types.ObjectId();
+            newUser = new User ({email, password, role, propertyOwnerDetails});
+        }else {
+            newUser = new User ({email, password, role});
+        }
+
+        const token = createJWT(newUser)
+        res.json({token});
+       
+        await newUser.save();
+
+    } catch (error ) {
+        console.error(error);
+        res.status(500).json(error.message);
+    }
+
+});
 
 
 

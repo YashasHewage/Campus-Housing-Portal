@@ -1,37 +1,41 @@
 import express from 'express';
 import landlordRoutes from './routes/landlordRoutes.js';
-
-//import adminRoutes from  ('./routes/adminRoutes.js');
-//import authController from ('./controllers/authController.js');
 import mongoose from 'mongoose';
-
 import * as dotenv from 'dotenv';
-dotenv.config()
+import checkRole from './middleware/roleMiddleware.js';
+import { signin, createNewUser } from './handlers/user.js';
+import adminRoutes from './routes/adminRoutes.js';
+
+
+
 
 const app = express();
-const PORT = 3000;
-app.use(express.json());
+dotenv.config()
+
+const PORT = process.env.PORT || 3000;
+const MOGOURL = process.env.MONGO_URL
 
 
 mongoose
-.connect('mongodb://localhost:27017/new_test')
-.then(() => console.log('MongoDB connected Successfully...!'))
-.catch((error) => {
-  console.log('MongoDB Error:', error.message);
-  process.exit(1);
-});
+    .connect(MOGOURL)
+    .then(() => {
+        console.log("Database is connected successfully");
+        app.listen(PORT, () => {
+            console.log(`Server is running on port ${PORT}`);
+        });
+    });
 
 
 
+   
+    app.use(express.json());
 
-//app.use('/admin', adminRoutes);
-app.use('/api/landlord', landlordRoutes);
+    app.use('/registerPropertyOwner',checkRole('propertyOwner'),createNewUser)
+    app.use('/loginPropertyOwner',checkRole('propertyOwner'),signin)
+
+    app.use('/adminlogin',checkRole('admin'),signin)
+  
+    //app.use('/admin', adminRoutes);
+    app.use('/api/admin',adminRoutes);
+   
 //app.post('/login', authController.login);
-
-
-
-
-
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-  });

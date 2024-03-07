@@ -1,5 +1,5 @@
+import { ObjectId } from 'bson';
 import mongoose from 'mongoose';
-
 
 const propertySchema = new mongoose.Schema({
     title: {
@@ -36,15 +36,14 @@ const propertySchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    owner: {
-        email: {
-            type: String,
-            required: true
-        },
-        mobile: {
-            type: Number,
-            required: true
-        }
+    propertyOwnerDetails:{
+        type: ObjectId,
+        require: true,
+        ref: 'User'
+    },
+    mobile: {
+        type: Number,
+        required: true
     },
     isInMap: {
         type: Boolean,
