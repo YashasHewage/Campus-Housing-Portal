@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { createNewUser } from "./handlers/user";
-import checkRole from "./middleware/roleMiddleware";
-import { addproperty, deletedProperty, getPropertyOwnerDetails, getmyproperties, updateProperty } from "./handlers/property";
+import { createNewUser } from "./handlers/user.js";
+import checkRole from "./middleware/roleMiddleware.js";
+import { addproperty, deletedProperty, getPropertyOwnerDetails, getmyproperties, updateProperty } from "./handlers/property.js";
 
 
 const router = Router();
@@ -17,3 +17,6 @@ router.get('/get-my-properties',checkRole('propertyOwner'||'warden'),getmyproper
 router.put('/update-property/:id',checkRole('propertyOwner'),updateProperty)
 router.delete('/delete-property/:id',checkRole('propertyOwner'),deletedProperty)
 router.get('/get-landlord-details',checkRole('warden'||'propertyOwner'),getPropertyOwnerDetails)
+
+
+export default router;

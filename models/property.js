@@ -45,11 +45,16 @@ const propertySchema = new mongoose.Schema({
         type: Number,
         required: true
     },
-    isInMap: {
+    studentPublish: {
         type: Boolean,
         required: true,
         default: false
     },
+    // isInMap: {
+    //     type: Boolean,
+    //     required: true,
+    //     default: false
+    // },
     availableRooms: {
         type: Number,
         required: true

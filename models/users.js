@@ -15,11 +15,10 @@ const user = new mongoose.Schema({
     },
 
     role: {
-        name: {
-            type: String,
-            enum: ['admin','student','warden','propertyOwner'],
-            require: true,
-        }
+        type: String,
+        enum: ['admin','student','warden','propertyOwner'],
+        require: true,
+
     },
     propertyOwnerDetails:{
         type: ObjectId,
@@ -29,27 +28,3 @@ const user = new mongoose.Schema({
 })
 
 export default mongoose.model('User',user);
-
-
-
-
-
-
-
-
-
-
-// userSchema.pre('save', function (next) {
-//     if (this.role === 'student') {
-//         this.roleDetails = studentSchema;
-//     } else if (this.role === 'landlord') {
-//         this.roleDetails = landlordSchema;
-//     }
-//     next();
-// });
-
-
-
-// {
-    
-// }

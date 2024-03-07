@@ -1,6 +1,7 @@
-import { comparePasswords, createJWT, hashPassword } from "../middleware/auth";
+import {createJWT,hashPassword,comparePasswords} from '../middleware/auth.js';
 import User from '../models/users.js';
 import mongoose from "mongoose";
+
 
 
 export const createNewUser = async (req,res) => {
@@ -33,13 +34,13 @@ export const createNewUser = async (req,res) => {
 export const signin = async (req, res) => {
     const {email, role } = req.body ;
 
-    const user = await User.findone({ email,role });
+    const user = await User.findOne({ email,role });
 
    
     if (!user) {
         return res.status(401).json({ message: "Invalid email or password" });
     }
-    const isValid = await comparePasswords(req.body.password, User.password)
+    const isValid = await comparePasswords(req.body.password, user.password)
 
     if(!isValid) {
         res.status(401)

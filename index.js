@@ -1,10 +1,10 @@
 import express from 'express';
-import landlordRoutes from './routes/landlordRoutes.js';
 import mongoose from 'mongoose';
 import * as dotenv from 'dotenv';
 import checkRole from './middleware/roleMiddleware.js';
 import { signin, createNewUser } from './handlers/user.js';
 import { protect } from './middleware/auth.js';
+import router from './router.js';
 
 
 
@@ -29,19 +29,19 @@ mongoose
     app.use(express.json());
 
     //proerty owner register
-    app.post('/registerPropertyOwner',checkRole('propertyOwner'),createNewUser)
+    app.post('/registerPropertyOwner',createNewUser)
 
     //property owner login
-    app.get('/loginPropertyOwner',checkRole('propertyOwner'),signin)
+    app.get('/loginPropertyOwner',signin)
 
     // admin login
-    app.get('/adminlogin',checkRole('admin'),signin)
+    app.get('/adminlogin',signin)
 
     //student login
-    app.get('/studentlogin',checkRole('student'),signin)
+    app.get('/studentlogin',signin)
 
     //warden login
-    app.get('/wardenlogin',checkRole('warden',signin));
+    app.get('/wardenlogin',signin);
   
     app.use('/api',protect,router);
    
