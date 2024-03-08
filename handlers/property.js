@@ -4,17 +4,17 @@ import User from '../models/users.js';
 export const addproperty = async (req,res) => {
     try {
 
-        const { title, description, date, price, coordinates, distance, image, mobile, propertyOwnerDetails, availableRooms } = req.body;
+        const { title, description, date, price, coordinates, distance, image,isInMap, propertyOwnerDetails, availableRooms } = req.body;
 
-        if(req.user.role !== 'propertyOwner'){
-            return res.status(403).json({ message: 'Access denied' });
-        }
-        const user = await User.findById(req.user._id);
-        if (!user) {
-            return res.status(404).json({ message: 'User not found' });
-        }
+        // if(req.user.role !== 'propertyOwner'){
+        //     return res.status(403).json({ message: 'Access denied' });
+        // }
+        // const user = await User.findById(req.user._id);
+        // if (!user) {
+        //     return res.status(404).json({ message: 'User not found' });
+        // }
 
-       
+
 
 
         const newProperty = new Property({
@@ -25,9 +25,8 @@ export const addproperty = async (req,res) => {
             coordinates,
             distance,
             image,
-            mobile,
-            propertyOwnerDetails: user.propertyOwnerDetails,
-            //isInMap,
+            propertyOwnerDetails,
+            isInMap,
             availableRooms
         });
 
@@ -46,9 +45,9 @@ export const addproperty = async (req,res) => {
 
 export const getmyproperties = async (res,req) => {
     try {
-        const { propertyOwnerDetails } = req.body;
+        const { email } = req.body;
 
-        const properties = await Property.find({ "propertyOwnerDetails": propertyOwnerDetails });
+        const properties = await Property.find({ "owner.email": email });
 
         res.json(properties);
     } catch (error) {
@@ -60,7 +59,7 @@ export const getmyproperties = async (res,req) => {
 export const updateProperty = async (req,res) => {
     try {
         const { id } = req.params;
-        const { title, description, date, price, coordinates, distance, image, mobile, propertyOwnerDetails, isInMap, availableRooms } = req.body;
+        const { title, description, date, price, coordinates, distance, image, propertyOwnerDetails, isInMap, availableRooms } = req.body;
 
         const updatedProperty = {
             title,
@@ -70,7 +69,6 @@ export const updateProperty = async (req,res) => {
             coordinates,
             distance,
             image,
-            mobile,
             propertyOwnerDetails,
             isInMap,
             availableRooms
@@ -109,16 +107,15 @@ export const deletedProperty = async (req,res) => {
 
 }
 
-export const getPropertyOwnerDetails = async (req, res) => {
-    try {
-        const { propertyId } = req.body;
+// export const getPropertyOwnerDetails = async (req, res) => {
+//     try {
+//         const { email } = req.body;
 
-        const property = await Property.findById(propertyId).populate('propertyOwnerDetails');
+//         const landlord = await Property.findOne({ email });
+//         res.json(landlord);
 
-        res.json(property.propertyOwnerDetails);
-
-    } catch (error) {
-        console.error(error.message);
-        res.status(500).json({ message: 'Internal server error' });
-    }
-}
+//     } catch (error) {
+//         console.error(error.message);
+//         res.status(500).json({ message: 'Internal server error' });
+//     }
+// }

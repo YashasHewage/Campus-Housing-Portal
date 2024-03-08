@@ -17,13 +17,13 @@ const user = new mongoose.Schema({
     role: {
         type: String,
         enum: ['admin','student','warden','propertyOwner'],
-        require: true,
+        require: true, 
 
     },
     propertyOwnerDetails:{
         type: ObjectId,
         require: false,
-    } 
+    }
     
 })
 

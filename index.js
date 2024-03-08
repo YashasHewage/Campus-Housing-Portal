@@ -1,8 +1,7 @@
+import * as dotenv from 'dotenv';
 import express from 'express';
 import mongoose from 'mongoose';
-import * as dotenv from 'dotenv';
-import checkRole from './middleware/roleMiddleware.js';
-import { signin, createNewUser } from './handlers/user.js';
+import { createNewUser, signin } from './handlers/user.js';
 import { protect } from './middleware/auth.js';
 import router from './router.js';
 
