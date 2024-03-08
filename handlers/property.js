@@ -1,21 +1,9 @@
 import Property from '../models/property.js';
-import User from '../models/users.js';
 
 export const addproperty = async (req,res) => {
     try {
 
         const { title, description, date, price, coordinates, distance, image,isInMap, propertyOwnerDetails, availableRooms } = req.body;
-
-        // if(req.user.role !== 'propertyOwner'){
-        //     return res.status(403).json({ message: 'Access denied' });
-        // }
-        // const user = await User.findById(req.user._id);
-        // if (!user) {
-        //     return res.status(404).json({ message: 'User not found' });
-        // }
-
-
-
 
         const newProperty = new Property({
             title,
@@ -106,6 +94,26 @@ export const deletedProperty = async (req,res) => {
     }
 
 }
+
+export const getAllProperties = async (req, res) => {
+    try {
+        const properties = await Property.find();
+        res.json(properties);
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).json(error.message);
+    }
+};
+
+export const getAllApprovedProperties = async (req, res) => {
+    try {
+        const properties = await Property.find({ isInMap: true });
+        res.json(properties);
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).json(error.message);
+    }
+};
 
 // export const getPropertyOwnerDetails = async (req, res) => {
 //     try {

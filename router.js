@@ -1,15 +1,15 @@
 import { Router } from "express";
+import { createNewArticle, getAllArticles, getArticleById, deleteArticle, updateArticle } from "./handlers/article.js";
+import { getPropertyById } from "./handlers/common.js";
+import { addproperty, deletedProperty, getAllApprovedProperties, getAllProperties, getmyproperties, updateProperty } from "./handlers/property.js";
 import { createNewUser } from "./handlers/user.js";
 import checkRole from "./middleware/roleMiddleware.js";
-import { addproperty, deletedProperty, getmyproperties, updateProperty } from "./handlers/property.js";
-import { getAllProperties} from "./handlers/warden.js";
-import { getAllApprovedProperties} from "./handlers/student.js";
-import { getPropertyById} from "./handlers/common.js";
+
 
 
 const router = Router();
 
-//Admin Router
+//user Router
 router.post('/studentRegisration',checkRole('admin'),createNewUser);
 router.post('/wardenRegisration',checkRole('admin'),createNewUser);
 
@@ -22,7 +22,16 @@ router.delete('/delete-property/:id',checkRole('propertyOwner' || 'warden'),dele
 router.get('/get-all-properties',checkRole('warden'),getAllProperties)
 router.get('/get-all-approved-properties',checkRole('student'),getAllApprovedProperties)
 router.get('/get-property/:id',getPropertyById)
-// router.get('/get-landlord-details',checkRole('propertyOwner'),getPropertyOwnerDetails)
+
+
+//Article Router
+router.post('/create-article',checkRole('admin'),createNewArticle)
+router.get('/get-all-articles',checkRole('admin' || 'student'),getAllArticles)
+router.get('/get-article/:id',checkRole('admin' || 'student'),getArticleById)
+router.delete('/delete-article/:id', checkRole('admin'),deleteArticle)
+router.put('/update-article/:id', checkRole('admin'),updateArticle)
+
+
 
 
 export default router;

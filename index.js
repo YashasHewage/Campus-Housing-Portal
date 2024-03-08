@@ -29,12 +29,12 @@ mongoose
 
     //proerty owner register
     app.post('/registerPropertyOwner',createNewUser)
-
+    
     //property owner login
     app.get('/loginPropertyOwner',signin)
 
     // admin login
-    app.get('/adminlogin',signin)
+    app.get('/loginAdmin',signin)
 
     //student login
     app.get('/studentlogin',signin)
