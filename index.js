@@ -1,3 +1,4 @@
+import cors from 'cors';
 import * as dotenv from 'dotenv';
 import express from 'express';
 import mongoose from 'mongoose';
@@ -11,6 +12,7 @@ import router from './router.js';
 
 const app = express();
 dotenv.config()
+app.use(cors());
 
 const PORT = process.env.PORT || 3000;
 const MOGOURL = process.env.MONGO_URL
