@@ -2,9 +2,9 @@ import Property from '../models/property.js';
 
 export const getPropertyById = async (req,res) => {
     try {
-        const { id } = req.params;
+        const { propertyId } = req.params;
 
-        const property = await Property.findById(id);
+        const property = await Property.findById( propertyId );
 
         res.json(property);
     } catch (error) {

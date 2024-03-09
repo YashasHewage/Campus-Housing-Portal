@@ -1,9 +1,10 @@
 import Property from '../models/property.js';
+import RentalRequest from '../models/rentalRequest.js';
 
 export const addproperty = async (req,res) => {
     try {
 
-        const { title, description, date, price, coordinates, distance, image,isInMap, propertyOwnerDetails, availableRooms } = req.body;
+        const {  title, description, date, price, coordinates, distance, image, propertyOwnerDetails, isInMap, isRented, rentalRequests, availableRooms  } = req.body;
 
         const newProperty = new Property({
             title,
@@ -15,6 +16,8 @@ export const addproperty = async (req,res) => {
             image,
             propertyOwnerDetails,
             isInMap,
+            isRented,
+            rentalRequests,
             availableRooms
         });
 
@@ -44,10 +47,10 @@ export const getmyproperties = async (res,req) => {
     }
 }
 
-export const updateProperty = async (req,res) => {
+export const updateProperty = async (req, res) => {
     try {
-        const { id } = req.params;
-        const { title, description, date, price, coordinates, distance, image, propertyOwnerDetails, isInMap, availableRooms } = req.body;
+        const { propertyId } = req.params;
+        const { title, description, date, price, coordinates, distance, image, propertyOwnerDetails, isInMap, isRented , rentalRequests, availableRooms } = req.body;
 
         const updatedProperty = {
             title,
@@ -59,29 +62,34 @@ export const updateProperty = async (req,res) => {
             image,
             propertyOwnerDetails,
             isInMap,
+            isRented,
+            rentalRequests,
             availableRooms
         };
 
-
-        const updatedPropertyDoc = await Property.findByIdAndUpdate(id, updatedProperty);
+        const updatedPropertyDoc = await Property.findByIdAndUpdate(propertyId, updatedProperty, { new: true });
 
         if (!updatedPropertyDoc) {
             return res.status(404).json({ message: 'Property not found' });
         }
 
-        res.json({ message: 'Property updated successfully' });
+        // update availableRooms
+        const acceptedRequestsCount = updatedPropertyDoc.rentalRequests.filter(request => request.status === 'accepted').length;
+        updatedPropertyDoc.availableRooms = availableRooms - acceptedRequestsCount;
+        await updatedPropertyDoc.save();
+
+        res.json({ message: 'Property updated successfully', updatedPropertyDoc });
     } catch (error) {
         console.error(error.message);
         res.status(500).json({ message: 'Internal server error' });
     }
-
-}
+};
 
 export const deletedProperty = async (req,res) => {
     try {
-        const { id } = req.params;
+        const { propertyId } = req.params;
 
-        const deletedProperty = await Property.findByIdAndDelete(id);
+        const deletedProperty = await Property.findByIdAndDelete( propertyId );
 
         if (!deletedProperty) {
             return res.status(404).json({ message: 'Property not found' });
@@ -105,6 +113,8 @@ export const getAllProperties = async (req, res) => {
     }
 };
 
+
+
 export const getAllApprovedProperties = async (req, res) => {
     try {
         const properties = await Property.find({ isInMap: true });
@@ -115,15 +125,4 @@ export const getAllApprovedProperties = async (req, res) => {
     }
 };
 
-// export const getPropertyOwnerDetails = async (req, res) => {
-//     try {
-//         const { email } = req.body;
 
-//         const landlord = await Property.findOne({ email });
-//         res.json(landlord);
-
-//     } catch (error) {
-//         console.error(error.message);
-//         res.status(500).json({ message: 'Internal server error' });
-//     }
-// }

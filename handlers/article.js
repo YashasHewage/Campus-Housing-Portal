@@ -35,9 +35,9 @@ export const getAllArticles = async (req, res) => {
 
 export const getArticleById = async (req, res) => {
     try {
-        const { id } = req.params;
+        const { articleId } = req.params;
 
-        const article = await Article.findById(id);
+        const article = await Article.findById(articleId);
 
         res.json(article);
     } catch (error) {
@@ -48,9 +48,9 @@ export const getArticleById = async (req, res) => {
 
 export const deleteArticle = async (req, res) => {
     try {
-        const { id } = req.params;
+        const { articleId } = req.params;
 
-        const deleteArticle = await Article.findByIdAndDelete(id);
+        const deleteArticle = await Article.findByIdAndDelete( articleId );
 
         if (!deleteArticle) {
             return res.status(404).json({ message: 'Article not found' });
@@ -65,7 +65,7 @@ export const deleteArticle = async (req, res) => {
 
 export const updateArticle = async (req, res) => {
     try {
-        const { id } = req.params;
+        const { articleId } = req.params;
         const { title, description, date, author } = req.body;
 
         const updatedArticle = {
@@ -75,7 +75,7 @@ export const updateArticle = async (req, res) => {
             author
         };
 
-        const updatedArticleDoc = await Article.findByIdAndUpdate(id, updatedArticle);
+        const updatedArticleDoc = await Article.findByIdAndUpdate(articleId, updatedArticle);
 
         if (!updatedArticleDoc) {
             return res.status(404).json({ message: 'Article not found' });

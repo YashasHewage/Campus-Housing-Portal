@@ -54,7 +54,15 @@ const propertySchema = new mongoose.Schema({
     availableRooms: {
         type: Number,
         required: true
-    }
+    },
+
+
+    isRented: {
+        type: Boolean,
+        default: false,
+        required: false,
+    },
+    rentalRequests: [{ type: mongoose.Schema.Types.Mixed, ref: 'RentalRequest' }]
 });
 
 export default mongoose.model('Property', propertySchema);
