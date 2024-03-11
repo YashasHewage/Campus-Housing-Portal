@@ -31,10 +31,13 @@ const propertySchema = new mongoose.Schema({
         type: Number,
         required: true
     },
-    image: {
-        type: String,
-        required: true
-    },
+    images:[
+        {
+            type: String,
+            required: true
+        }
+    
+    ],
     propertyOwnerDetails:{
         email : {
             type: String,
@@ -53,7 +56,7 @@ const propertySchema = new mongoose.Schema({
     },
     availableRooms: {
         type: Number,
-        required: true
+        required: false
     },
 
 

@@ -1,13 +1,23 @@
 import { Router } from "express";
-import { createNewArticle, getAllArticles, getArticleById, deleteArticle, updateArticle } from "./handlers/article.js";
+import multer from "multer";
+import { createNewArticle, deleteArticle, getAllArticles, getArticleById, updateArticle } from "./handlers/article.js";
 import { getPropertyById } from "./handlers/common.js";
-import { addproperty, deletedProperty, getAllApprovedProperties, getAllProperties, getmyproperties, updateProperty } from "./handlers/property.js";
+import { storage, addproperty, deletedProperty, getAllApprovedProperties, getAllProperties, getmyproperties, updateProperty } from "./handlers/property.js";
+import { deleteRequest, getMyAllRequests, makeRequest } from "./handlers/rentalRequest.js";
 import { createNewUser } from "./handlers/user.js";
 import checkRole from "./middleware/roleMiddleware.js";
-import { makeRequest, getMyAllRequests , deleteRequest} from "./handlers/rentalRequest.js";
+import Test from "./models/test.js";
 
 
 const router = Router();
+
+// image upload code
+const upload = multer({storage: storage});
+
+
+
+
+
 
 //user Router
 router.post('/studentRegisration',checkRole('admin'),createNewUser);
@@ -15,7 +25,7 @@ router.post('/wardenRegisration',checkRole('admin'),createNewUser);
 
 
 //Property Router
-router.post ('/add-property',checkRole('propertyOwner'),addproperty)
+router.post ('/add-property',checkRole('propertyOwner'),upload.array("files", 4),addproperty)
 router.get('/get-my-properties',checkRole('propertyOwner'),getmyproperties)
 router.put('/update-property/:propertyId',checkRole('propertyOwner' || 'warden'),updateProperty)
 router.delete('/delete-property/:propertyId',checkRole('propertyOwner' || 'warden'),deletedProperty)
@@ -37,6 +47,31 @@ router.put('/update-article/:articleId', checkRole('admin'),updateArticle)
 router.put('/make-request',checkRole('student'),makeRequest)
 router.get('/get-my-requests',checkRole('student'),getMyAllRequests)
 router.delete('/delete-request',checkRole('propertyOwner'),deleteRequest)
+
+
+
+
+
+router.post('/add-test', upload.single("file"), async (req, res) => {
+    try {
+        const { name, isInMap } = req.body;
+        const image = req.file.filename;
+
+        const newTest = new Test({
+            name,
+            isInMap,
+            image
+        });
+
+        await newTest.save();
+
+        res.json({ message: 'Test added successfully' });
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).json({ error: error.message });
+    }
+});
+
 
 
 

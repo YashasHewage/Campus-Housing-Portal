@@ -1,10 +1,25 @@
+import multer from "multer";
 import Property from '../models/property.js';
-import RentalRequest from '../models/rentalRequest.js';
+
+
+export const storage = multer.diskStorage({
+    destination: function(req, file, cb) {
+        cb(null, './images')
+    },
+    filename: function(req, file, cb) {
+        cb(null, file.originalname)
+    }
+});
+
+
+
+
 
 export const addproperty = async (req,res) => {
     try {
 
-        const {  title, description, date, price, coordinates, distance, image, propertyOwnerDetails, isInMap, isRented, rentalRequests, availableRooms  } = req.body;
+        const {  title, description, date, price, coordinates, distance, propertyOwnerDetails, isInMap, isRented, rentalRequests, availableRooms  } = req.body;
+        const images = req.files.map(file => file.originalname);
 
         const newProperty = new Property({
             title,
@@ -13,7 +28,7 @@ export const addproperty = async (req,res) => {
             price,
             coordinates,
             distance,
-            image,
+            images,
             propertyOwnerDetails,
             isInMap,
             isRented,
@@ -50,7 +65,13 @@ export const getmyproperties = async (res,req) => {
 export const updateProperty = async (req, res) => {
     try {
         const { propertyId } = req.params;
-        const { title, description, date, price, coordinates, distance, image, propertyOwnerDetails, isInMap, isRented , rentalRequests, availableRooms } = req.body;
+        const { title, description, date, price, coordinates, distance, propertyOwnerDetails, isInMap, isRented , rentalRequests, availableRooms } = req.body;
+
+        
+        let images = [];
+        if (req.files && req.files.length > 0) {
+            images = req.files.map(file => file.originalname);
+        }
 
         const updatedProperty = {
             title,
@@ -59,7 +80,7 @@ export const updateProperty = async (req, res) => {
             price,
             coordinates,
             distance,
-            image,
+            images,
             propertyOwnerDetails,
             isInMap,
             isRented,
@@ -67,13 +88,14 @@ export const updateProperty = async (req, res) => {
             availableRooms
         };
 
+        // Find the property by ID and update
         const updatedPropertyDoc = await Property.findByIdAndUpdate(propertyId, updatedProperty, { new: true });
 
         if (!updatedPropertyDoc) {
             return res.status(404).json({ message: 'Property not found' });
         }
 
-        // update availableRooms
+        // Update availableRooms
         const acceptedRequestsCount = updatedPropertyDoc.rentalRequests.filter(request => request.status === 'accepted').length;
         updatedPropertyDoc.availableRooms = availableRooms - acceptedRequestsCount;
         await updatedPropertyDoc.save();
@@ -84,6 +106,7 @@ export const updateProperty = async (req, res) => {
         res.status(500).json({ message: 'Internal server error' });
     }
 };
+
 
 export const deletedProperty = async (req,res) => {
     try {
