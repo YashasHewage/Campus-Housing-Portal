@@ -68,7 +68,7 @@ const propertySchema = new mongoose.Schema({
 
     isRented: {
         type: Boolean,
-        default: false,
+        default: true,
         required: false,
     },
     rentalRequests: [{ type: mongoose.Schema.Types.Mixed, ref: 'RentalRequest' }]

@@ -1,5 +1,4 @@
 import multer from "multer";
-import path from "path";
 import Property from '../models/property.js';
 
 
@@ -8,7 +7,7 @@ export const storage = multer.diskStorage({
         cb(null, 'SDT Project/../../testBackEnd/public/uploads')
     },
     filename: function(req, file, cb) {
-        cb(null, file.fieldname +"_" + Date.now() + path.extname(file.originalname));
+        cb(null, file.originalname + '-' + Date.now());
     }
 });
 
@@ -74,10 +73,23 @@ export const updateProperty = async (req, res) => {
         const { propertyId } = req.params;
         const { title, description, date, price, coordinates, distance, propertyOwnerDetails, isInMap, isRented , rentalRequests, availableRooms } = req.body;
         
+        const existingImages = await Property.findById(propertyId);
+
+            let image1, image2, image3;
+
+        if (req.files) {
+
+                image1 = req.files[0].originalname;
+                image2 = req.files[1].originalname;
+                image3 = req.files[2].originalname;
+        }else {
+                image1 = existingImages.image1;
+                image2 = existingImages.image2;
+                image3 = existingImages.image3;
+        }
+
+
         
-        const image1 = req.files[0].originalname;
-        const image2 = req.files[1].originalname;
-        const image3 = req.files[2].originalname;
         
         const updatedProperty = {
             title,
