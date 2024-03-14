@@ -1,8 +1,8 @@
+import cors from 'cors';
+import * as dotenv from 'dotenv';
 import express from 'express';
 import mongoose from 'mongoose';
-import * as dotenv from 'dotenv';
-import checkRole from './middleware/roleMiddleware.js';
-import { signin, createNewUser } from './handlers/user.js';
+import { createNewUser, signin } from './handlers/user.js';
 import { protect } from './middleware/auth.js';
 import router from './router.js';
 
@@ -12,6 +12,7 @@ import router from './router.js';
 
 const app = express();
 dotenv.config()
+app.use(cors());
 
 const PORT = process.env.PORT || 3000;
 const MOGOURL = process.env.MONGO_URL
@@ -30,12 +31,12 @@ mongoose
 
     //proerty owner register
     app.post('/registerPropertyOwner',createNewUser)
-
+    
     //property owner login
     app.get('/loginPropertyOwner',signin)
 
     // admin login
-    app.get('/adminlogin',signin)
+    app.get('/loginAdmin',signin)
 
     //student login
     app.get('/studentlogin',signin)

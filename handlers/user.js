@@ -7,6 +7,12 @@ import mongoose from "mongoose";
 export const createNewUser = async (req,res) => {
     try {
         const { email, role } = req.body;
+
+        const user = await User.findOne({ email,role });
+
+        if (user) {
+            return res.status(400).json({ message: "User already exists" });
+        }
         let password = req.body.password;
 
         password = await hashPassword(password);
@@ -20,7 +26,7 @@ export const createNewUser = async (req,res) => {
         }
 
         const token = createJWT(newUser)
-        res.json({token});
+        res.json({token,message: 'User created successfully'});
        
         await newUser.save();
 
@@ -44,7 +50,7 @@ export const signin = async (req, res) => {
 
     if(!isValid) {
         res.status(401)
-        res.json({mesage: 'nope'})
+        res.json({message: 'nope'})
         return
     }
 

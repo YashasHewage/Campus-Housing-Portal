@@ -1,20 +1,29 @@
+import multer from "multer";
+import path from "path";
 import Property from '../models/property.js';
-import User from '../models/users.js';
+
+
+export const storage = multer.diskStorage({
+    destination: function(req, file, cb) {
+        cb(null, 'SDT Project/../../testBackEnd/public/uploads')
+    },
+    filename: function(req, file, cb) {
+        cb(null, file.fieldname +"_" + Date.now() + path.extname(file.originalname));
+    }
+});
+
+
+
+
+
 
 export const addproperty = async (req,res) => {
     try {
 
-        const { title, description, date, price, coordinates, distance, image, mobile, propertyOwnerDetails, availableRooms } = req.body;
-
-        if(req.user.role !== 'propertyOwner'){
-            return res.status(403).json({ message: 'Access denied' });
-        }
-        const user = await User.findById(req.user._id);
-        if (!user) {
-            return res.status(404).json({ message: 'User not found' });
-        }
-
-       
+        const {  title, description, date, price, coordinates, distance, propertyOwnerDetails, isInMap, isRented, rentalRequests, availableRooms  } = req.body;
+        const image1 = req.files[0].originalname;
+        const image2 = req.files[1].originalname;
+        const image3 = req.files[2].originalname;
 
 
         const newProperty = new Property({
@@ -24,10 +33,13 @@ export const addproperty = async (req,res) => {
             price,
             coordinates,
             distance,
-            image,
-            mobile,
-            propertyOwnerDetails: user.propertyOwnerDetails,
-            //isInMap,
+            image1,
+            image2,
+            image3,
+            propertyOwnerDetails,
+            isInMap,
+            isRented,
+            rentalRequests,
             availableRooms
         });
 
@@ -42,13 +54,13 @@ export const addproperty = async (req,res) => {
         res.status(500).json(error.message);
     }
 
-}
+};
 
 export const getmyproperties = async (res,req) => {
     try {
-        const { propertyOwnerDetails } = req.body;
+        const { email } = req.body;
 
-        const properties = await Property.find({ "propertyOwnerDetails": propertyOwnerDetails });
+        const properties = await Property.find({ "owner.email": email });
 
         res.json(properties);
     } catch (error) {
@@ -57,11 +69,16 @@ export const getmyproperties = async (res,req) => {
     }
 }
 
-export const updateProperty = async (req,res) => {
+export const updateProperty = async (req, res) => {
     try {
-        const { id } = req.params;
-        const { title, description, date, price, coordinates, distance, image, mobile, propertyOwnerDetails, isInMap, availableRooms } = req.body;
-
+        const { propertyId } = req.params;
+        const { title, description, date, price, coordinates, distance, propertyOwnerDetails, isInMap, isRented , rentalRequests, availableRooms } = req.body;
+        
+        
+        const image1 = req.files[0].originalname;
+        const image2 = req.files[1].originalname;
+        const image3 = req.files[2].originalname;
+        
         const updatedProperty = {
             title,
             description,
@@ -69,33 +86,41 @@ export const updateProperty = async (req,res) => {
             price,
             coordinates,
             distance,
-            image,
-            mobile,
+            image1,
+            image2,
+            image3,
             propertyOwnerDetails,
             isInMap,
+            isRented,
+            rentalRequests,
             availableRooms
         };
 
-
-        const updatedPropertyDoc = await Property.findByIdAndUpdate(id, updatedProperty);
+        // Find the property by ID and update
+        const updatedPropertyDoc = await Property.findByIdAndUpdate(propertyId, updatedProperty, { new: true });
 
         if (!updatedPropertyDoc) {
             return res.status(404).json({ message: 'Property not found' });
         }
 
-        res.json({ message: 'Property updated successfully' });
+        // Update availableRooms
+        const acceptedRequestsCount = updatedPropertyDoc.rentalRequests.filter(request => request.status === 'accepted').length;
+        updatedPropertyDoc.availableRooms = availableRooms - acceptedRequestsCount;
+        await updatedPropertyDoc.save();
+
+        res.json({ message: 'Property updated successfully', updatedPropertyDoc });
     } catch (error) {
         console.error(error.message);
         res.status(500).json({ message: 'Internal server error' });
     }
+};
 
-}
 
 export const deletedProperty = async (req,res) => {
     try {
-        const { id } = req.params;
+        const { propertyId } = req.params;
 
-        const deletedProperty = await Property.findByIdAndDelete(id);
+        const deletedProperty = await Property.findByIdAndDelete( propertyId );
 
         if (!deletedProperty) {
             return res.status(404).json({ message: 'Property not found' });
@@ -109,16 +134,26 @@ export const deletedProperty = async (req,res) => {
 
 }
 
-export const getPropertyOwnerDetails = async (req, res) => {
+export const getAllProperties = async (req, res) => {
     try {
-        const { propertyId } = req.body;
-
-        const property = await Property.findById(propertyId).populate('propertyOwnerDetails');
-
-        res.json(property.propertyOwnerDetails);
-
+        const properties = await Property.find();
+        res.json(properties);
     } catch (error) {
         console.error(error.message);
-        res.status(500).json({ message: 'Internal server error' });
+        res.status(500).json(error.message);
     }
-}
+};
+
+
+
+export const getAllApprovedProperties = async (req, res) => {
+    try {
+        const properties = await Property.find({ isInMap: true });
+        res.json(properties);
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).json(error.message);
+    }
+};
+
+

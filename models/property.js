@@ -1,4 +1,3 @@
-import { ObjectId } from 'bson';
 import mongoose from 'mongoose';
 
 const propertySchema = new mongoose.Schema({
@@ -32,33 +31,47 @@ const propertySchema = new mongoose.Schema({
         type: Number,
         required: true
     },
-    image: {
+    image1 : {
         type: String,
-        required: true
+        required: false
     },
+    image2 : {
+        type: String,
+        required: false
+    },
+    image3 : {
+        type: String,
+        required: false
+    },
+
     propertyOwnerDetails:{
-        type: ObjectId,
-        require: true,
-        ref: 'User'
+        email : {
+            type: String,
+            required: true
+        },
+        mobile: {
+            type: Number,
+            required: true
+        }
     },
-    mobile: {
-        type: Number,
-        required: true
-    },
-    studentPublish: {
+
+    isInMap: {
         type: Boolean,
-        required: true,
+        required: false,
         default: false
     },
-    // isInMap: {
-    //     type: Boolean,
-    //     required: true,
-    //     default: false
-    // },
     availableRooms: {
         type: Number,
-        required: true
-    }
+        required: false
+    },
+
+
+    isRented: {
+        type: Boolean,
+        default: false,
+        required: false,
+    },
+    rentalRequests: [{ type: mongoose.Schema.Types.Mixed, ref: 'RentalRequest' }]
 });
 
 export default mongoose.model('Property', propertySchema);
