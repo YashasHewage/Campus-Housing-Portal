@@ -7,7 +7,7 @@ export const storage = multer.diskStorage({
         cb(null, 'SDT Project/../../testBackEnd/public/uploads')
     },
     filename: function(req, file, cb) {
-        cb(null, file.originalname + '-' + Date.now());
+        cb(null, file.originalname );
     }
 });
 
@@ -55,6 +55,11 @@ export const addproperty = async (req,res) => {
 
 };
 
+
+
+
+
+
 export const getmyproperties = async (res,req) => {
     try {
         const { email } = req.body;
@@ -66,7 +71,15 @@ export const getmyproperties = async (res,req) => {
         console.error(error.message);
         res.status(500).json(error.message);
     }
-}
+};
+
+
+
+
+
+
+
+
 
 export const updateProperty = async (req, res) => {
     try {
