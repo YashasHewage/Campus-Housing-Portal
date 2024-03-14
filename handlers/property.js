@@ -1,15 +1,17 @@
 import multer from "multer";
+import path from "path";
 import Property from '../models/property.js';
 
 
 export const storage = multer.diskStorage({
     destination: function(req, file, cb) {
-        cb(null, './images')
+        cb(null, 'SDT Project/../../testBackEnd/public/uploads')
     },
     filename: function(req, file, cb) {
-        cb(null, file.originalname)
+        cb(null, file.fieldname +"_" + Date.now() + path.extname(file.originalname));
     }
 });
+
 
 
 
@@ -19,7 +21,10 @@ export const addproperty = async (req,res) => {
     try {
 
         const {  title, description, date, price, coordinates, distance, propertyOwnerDetails, isInMap, isRented, rentalRequests, availableRooms  } = req.body;
-        const images = req.files.map(file => file.originalname);
+        const image1 = req.files[0].originalname;
+        const image2 = req.files[1].originalname;
+        const image3 = req.files[2].originalname;
+
 
         const newProperty = new Property({
             title,
@@ -28,7 +33,9 @@ export const addproperty = async (req,res) => {
             price,
             coordinates,
             distance,
-            images,
+            image1,
+            image2,
+            image3,
             propertyOwnerDetails,
             isInMap,
             isRented,
@@ -47,7 +54,7 @@ export const addproperty = async (req,res) => {
         res.status(500).json(error.message);
     }
 
-}
+};
 
 export const getmyproperties = async (res,req) => {
     try {
@@ -66,13 +73,12 @@ export const updateProperty = async (req, res) => {
     try {
         const { propertyId } = req.params;
         const { title, description, date, price, coordinates, distance, propertyOwnerDetails, isInMap, isRented , rentalRequests, availableRooms } = req.body;
-
         
-        let images = [];
-        if (req.files && req.files.length > 0) {
-            images = req.files.map(file => file.originalname);
-        }
-
+        
+        const image1 = req.files[0].originalname;
+        const image2 = req.files[1].originalname;
+        const image3 = req.files[2].originalname;
+        
         const updatedProperty = {
             title,
             description,
@@ -80,7 +86,9 @@ export const updateProperty = async (req, res) => {
             price,
             coordinates,
             distance,
-            images,
+            image1,
+            image2,
+            image3,
             propertyOwnerDetails,
             isInMap,
             isRented,

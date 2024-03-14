@@ -2,11 +2,11 @@ import { Router } from "express";
 import multer from "multer";
 import { createNewArticle, deleteArticle, getAllArticles, getArticleById, updateArticle } from "./handlers/article.js";
 import { getPropertyById } from "./handlers/common.js";
-import { storage, addproperty, deletedProperty, getAllApprovedProperties, getAllProperties, getmyproperties, updateProperty } from "./handlers/property.js";
+import { addproperty, deletedProperty, getAllApprovedProperties, getAllProperties, getmyproperties, storage, updateProperty } from "./handlers/property.js";
 import { deleteRequest, getMyAllRequests, makeRequest } from "./handlers/rentalRequest.js";
 import { createNewUser } from "./handlers/user.js";
 import checkRole from "./middleware/roleMiddleware.js";
-import Test from "./models/test.js";
+
 
 
 const router = Router();
@@ -25,9 +25,9 @@ router.post('/wardenRegisration',checkRole('admin'),createNewUser);
 
 
 //Property Router
-router.post ('/add-property',checkRole('propertyOwner'),upload.array("files", 4),addproperty)
+router.post ('/add-property',checkRole('propertyOwner'),upload.array("files",3),addproperty)
 router.get('/get-my-properties',checkRole('propertyOwner'),getmyproperties)
-router.put('/update-property/:propertyId',checkRole('propertyOwner' || 'warden'),updateProperty)
+router.put('/update-property/:propertyId',checkRole('propertyOwner' || 'warden'),upload.array("files",3),updateProperty)
 router.delete('/delete-property/:propertyId',checkRole('propertyOwner' || 'warden'),deletedProperty)
 router.get('/get-all-properties',checkRole('warden'),getAllProperties)
 router.get('/get-all-approved-properties',checkRole('student'),getAllApprovedProperties)
@@ -49,28 +49,6 @@ router.get('/get-my-requests',checkRole('student'),getMyAllRequests)
 router.delete('/delete-request',checkRole('propertyOwner'),deleteRequest)
 
 
-
-
-
-router.post('/add-test', upload.single("file"), async (req, res) => {
-    try {
-        const { name, isInMap } = req.body;
-        const image = req.file.filename;
-
-        const newTest = new Test({
-            name,
-            isInMap,
-            image
-        });
-
-        await newTest.save();
-
-        res.json({ message: 'Test added successfully' });
-    } catch (error) {
-        console.error(error.message);
-        res.status(500).json({ error: error.message });
-    }
-});
 
 
 

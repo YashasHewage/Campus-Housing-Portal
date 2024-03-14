@@ -31,13 +31,19 @@ const propertySchema = new mongoose.Schema({
         type: Number,
         required: true
     },
-    images:[
-        {
-            type: String,
-            required: true
-        }
-    
-    ],
+    image1 : {
+        type: String,
+        required: false
+    },
+    image2 : {
+        type: String,
+        required: false
+    },
+    image3 : {
+        type: String,
+        required: false
+    },
+
     propertyOwnerDetails:{
         email : {
             type: String,
