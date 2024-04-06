@@ -18,7 +18,6 @@ export const storage = multer.diskStorage({
 
 export const addproperty = async (req,res) => {
     try {
-
         const {  title, description, date, price, coordinates, distance, propertyOwnerDetails, isInMap, isRented, rentalRequests, availableRooms  } = req.body;
         const image1 = req.files[0].originalname;
         const image2 = req.files[1].originalname;
