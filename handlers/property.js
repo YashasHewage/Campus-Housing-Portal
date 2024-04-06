@@ -4,7 +4,7 @@ import Property from '../models/property.js';
 
 export const storage = multer.diskStorage({
     destination: function(req, file, cb) {
-        cb(null, 'SDT Project/../../testBackEnd/public/uploads')
+        cb(null, 'SDT Project/../../Campus-Housing-Portal-Frontend/HousingPortalSDT/public/uploads')
     },
     filename: function(req, file, cb) {
         cb(null, file.originalname );
@@ -179,5 +179,6 @@ export const getAllApprovedProperties = async (req, res) => {
         res.status(500).json(error.message);
     }
 };
+
 
 
