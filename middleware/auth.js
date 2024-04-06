@@ -22,7 +22,7 @@ export const createJWT = (user) => {
   return token;
 };
 
-export const protect = async (req, res, next) => {
+export const protect = (req, res, next) => {
   const bearer = req.headers.authorization;
 
   if (!bearer) {
@@ -40,8 +40,8 @@ export const protect = async (req, res, next) => {
   }
 
   try {
-    const { _id } = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = await User.findById({ _id }).select("_id");
+    const user = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = user;
     next();
     return;
   } catch (e) {
