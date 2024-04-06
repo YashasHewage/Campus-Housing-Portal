@@ -3,11 +3,11 @@ import mongoose from 'mongoose';
 const propertySchema = new mongoose.Schema({
     title: {
         type: String,
-        required: true
+        required: false
     },
     description: {
         type: String,
-        required: true
+        required: false
     },
     date: {
         type: Date,
@@ -15,21 +15,21 @@ const propertySchema = new mongoose.Schema({
     },
     price: {
         type: Number,
-        required: true
+        required: false
     },
     coordinates: {
         latitude: {
-            type: String,
-            required: true
+            type: Number,
+            required: false
         },
         longitude: {
-            type: String,
-            required: true
+            type: Number,
+            required: false
         }
     },
     distance: {
         type: Number,
-        required: true
+        required: false
     },
     image1 : {
         type: String,
@@ -47,11 +47,11 @@ const propertySchema = new mongoose.Schema({
     propertyOwnerDetails:{
         email : {
             type: String,
-            required: true
+            required: false
         },
         mobile: {
             type: Number,
-            required: true
+            required: false
         }
     },
 
