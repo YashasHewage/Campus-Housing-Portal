@@ -12,8 +12,8 @@ export const makeRequest = async (req, res) => {
         }
 
 
-        if (property.isRented) {
-            return res.status(400).json({ message: 'Property is already rented' });
+        if (property.isRented === false) {
+            return res.status(400).json({ message: 'Property is closed now' });
         }
     
     
